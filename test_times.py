@@ -1,3 +1,4 @@
+import pytest
 from times import compute_overlap_time, time_range
 
 def test_generic_case():
@@ -44,3 +45,19 @@ def test_touching_ranges_no_overlap():
     
     result = compute_overlap_time(range1, range2)
     assert result == expected
+
+# --- Required Test for Backwards Range (Issue #16) ---
+def test_backward_time_range_raises_error():
+    """
+    Tests that time_range raises a ValueError when end_time is before start_time.
+    Uses pytest.raises for error checking.
+    """
+    start_time = "2024-05-15 11:00:00"
+    end_time = "2024-05-15 10:00:00"  # This is earlier than start_time
+    
+    # Use pytest.raises to assert that a ValueError is raised
+    with pytest.raises(ValueError) as excinfo:
+        time_range(start_time, end_time)
+        
+    # Check if the error message is meaningful
+    assert "The 'end_time' cannot be before the 'start_time'. This time range is backwards." in str(excinfo.value)
